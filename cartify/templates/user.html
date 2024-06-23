@@ -1,0 +1,131 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; {{
+current_user.first_name }}{% endblock title %} {% block content %}
+<!-- User Section -->
+<section id="user" class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div
+    class="auth__alert {{ category }}"
+    style="max-width: 40%; margin: auto; margin-bottom: 25px"
+  >
+    <div class="auth__alert---text">{{ message }}</div>
+    <div class="auth__alert---close-btn">
+      <span>&times;</span>
+    </div>
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
+  <div class="user">
+    {% if current_user.is_authenticated and current_user.profile_pic != '' %}
+    <div
+      class="user__profile---picture"
+      style="background-image: url('../static/profile_pics/{{current_user.profile_pic}}')"
+    ></div>
+    {% else %}
+    <div class="user__profile---picture"></div>
+    {% endif %}
+    <div class="user__profile---name">
+      <div class="user__profile---name-label">
+        Hello, {{ current_user.first_name }}!
+      </div>
+      {% if current_user.is_authenticated and current_user.role == 'admin' %}
+      <span class="user__profile---name-status">Admin</span>
+      {% endif %}
+    </div>
+    <div class="user__profile---actions">
+      {%if current_user.is_authenticated and current_user.role == 'admin' %}
+      <a class="user__profile---add-btn" href="{{url_for('add_product')}}"
+        >Add Product</a
+      >
+      {% endif %} {% if current_user.role == 'user' %}
+      <a class="user__profile---cart-btn" href="{{url_for('cart')}}"
+        >View Cart</a
+      >
+      {% endif %}
+      <a class="user__profile---logout-btn" href="{{url_for('logout')}}"
+        >Sign Out</a
+      >
+    </div>
+  </div>
+</section>
+<!-- ! User Section End -->
+
+<section id="boughtProducts" class="container">
+  <h2 class="bought__products---title">Your Products</h2>
+
+  <!-- Your Products Container -->
+  {% if current_user.role == 'admin' %}
+  <div class="products__list">
+    {% for product in added_products %}
+    <div class="products__list---product wow fadeIn" data-wow-duration="1s">
+      <a href="{{url_for('product', product_id=product.id)}}">
+        <div class="products__list---product-img">
+          <img
+            src="/static/product_images/{{product.product_name}}/{{product.images[0].image_path}}"
+            alt=""
+          />
+        </div>
+        <div class="products__list---product-details">
+          <div class="products__list---product-category">
+            <a href="{{url_for('category', category=product.product_category)}}"
+              >{{product.product_category}}</a
+            >
+          </div>
+          <div class="products__list---product-name">
+            {{product.product_name}}
+          </div>
+        </div>
+        <div class="products__list---product-flex">
+          <div class="products__list---product-price">
+            ${{product.product_price}}
+          </div>
+          <div class="products__list---product-actions">
+            <a
+              class="products__list---product-editBtn"
+              href="{{url_for('edit_product', product_id=product.id)}}"
+              >Edit</a
+            >
+            <a
+              class="products__list---product-deleteBtn"
+              href="{{url_for('delete_product', product_id=product.id)}}"
+              >Delete</a
+            >
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <!-- ! Your Products Container End -->
+
+  <div class="products__list">
+    {% for product in my_products %}
+    <div class="products__list---product wow fadeIn" data-wow-duration="1s">
+      <a href="{{url_for('product', product_id=product.id)}}">
+        <div class="products__list---product-img">
+          <img
+            src="/static/product_images/{{product.product_name}}/{{product.images[0].image_path}}"
+            alt=""
+          />
+        </div>
+        <div class="products__list---product-details">
+          <div class="products__list---product-category">
+            <a href="{{url_for('category', category=product.product_category)}}"
+              >{{product.product_category}}</a
+            >
+          </div>
+          <div class="products__list---product-name">
+            {{product.product_name}}
+          </div>
+        </div>
+        <div class="products__list---product-flex">
+          <div class="products__list---product-price">
+            ${{product.product_price}}
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock content %}

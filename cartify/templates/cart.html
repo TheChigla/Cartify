@@ -1,0 +1,71 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; Cart{% endblock title
+%} {% block content %}
+<section id="cart" class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div class="auth__alert {{ category }}">
+    <div class="auth__alert---text">{{ message }}</div>
+    <div class="auth__alert---close-btn">
+      <span>&times;</span>
+    </div>
+  </div>
+  {% endfor %} {% endif %} {% endwith %} {% set items = namespace(value=0) %} {%
+  for product in session['cart'] %} {% set items.value = items.value + 1%} {%
+  endfor %}
+
+  <h2 class="cart__heading">Your Cart</h2>
+  <div class="cart__subtitle">
+    <div class="cart__subtitle---label">
+      There are <span>{{ items.value }}</span> product {% if items.value > 1
+      %}s{% endif %} in your cart
+    </div>
+    <div class="cart__subtitle---button">
+      <img src="/static/icons/trash.svg" alt="" />
+      Clear Cart
+    </div>
+  </div>
+  <div style="overflow-x: auto">
+    <table class="cart__table">
+      <tr>
+        <th>Product Image</th>
+        <th>Product Name</th>
+        <th>Product Price</th>
+        <th>Product Quantity</th>
+        <th>Total</th>
+      </tr>
+      {% set total = namespace(value=0) %} {% for product in session['cart'] %}
+      {% set total.value = total.value + product.product_price *
+      product.product_quantity %}
+      <tr>
+        <td>
+          <a href="{{url_for('product', product_id=1)}}">
+            <img
+              src="/static/product_images/{{ product.product_name }}/{{ product.product_image }}"
+              alt=""
+            />
+          </a>
+        </td>
+        <td class="cart__table---title">
+          <a href="{{url_for('product', product_id=1)}}"
+            >{{ product.product_name }}</a
+          >
+        </td>
+        <td class="cart__table---price">${{product.product_price}}</td>
+        <td class="cart__table---quantity">{{product.product_quantity}}</td>
+        <td class="cart__table---price">
+          ${{product.product_price * product.product_quantity}}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="cart__table---flex">
+    <div class="cart__table---total">Total: ${{total.value}}</div>
+    {% if items.value != 0 %}
+    <div class="cart__table---button">
+      <a href="{{url_for('checkout')}}">Checkout</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; Register{% endblock
+title %} {% block content %}
+<!-- Auth Section -->
+<section id="auth" class="container">
+  <div class="auth">
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="auth__alert {{ category }}">
+      <div class="auth__alert---text">{{ message }}</div>
+      <div class="auth__alert---close-btn">
+        <span>&times;</span>
+      </div>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <h2 class="form__title">Register</h2>
+    <div class="form__reminder">
+      Already have an account? <a href="{{ url_for('login') }}">Login</a>
+    </div>
+    <form class="form" method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="form__flex">
+        <div class="form__input">{{ form.first_name() }}</div>
+        <div class="form__input">{{ form.last_name() }}</div>
+      </div>
+      <div class="form__input">{{ form.email() }}</div>
+      <div class="form__input label">
+        <label>{{form.profile_pic.label()}}</label>
+        {{ form.profile_pic() }}
+      </div>
+      <div class="form__input">{{ form.password() }}</div>
+      <div class="form__input">{{ form.confirm_password() }}</div>
+      <div class="form__submit">{{ form.submit() }}</div>
+    </form>
+  </div>
+</section>
+<!-- ! Auth Section end -->
+{% endblock content %}

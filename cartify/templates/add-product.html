@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; Add New Product{%
+endblock title %} {% block content %}
+<section id="add-product" class="container">
+  <div class="add_product">
+    <h2 class="form__title">Add New Product</h2>
+    <form class="form" method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="form__input">
+        <!-- by default, insert product name as value -->
+        {{form.product_name()}}
+      </div>
+      <div class="form__input">{{form.product_price()}}</div>
+      <div class="form__input">{{form.product_quantity()}}</div>
+      <div class="form__input label">
+        {{form.product_category.label()}} {{form.product_category()}}
+      </div>
+      <div class="form__input label">
+        {{form.images.label()}} {{form.images()}}
+      </div>
+      <div class="form__input">{{form.product_description()}}</div>
+      <div class="form__submit">{{form.submit()}}</div>
+    </form>
+  </div>
+</section>
+{% endblock content %}

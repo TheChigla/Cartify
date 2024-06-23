@@ -1,0 +1,261 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="
+    https://cdn.jsdelivr.net/npm/wowjs@1.1.3/dist/wow.min.js
+    "></script>
+    <link
+      href="
+    https://cdn.jsdelivr.net/npm/wowjs@1.1.3/css/libs/animate.min.css
+    "
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <script>
+      let wow = new WOW({
+        boxClass: 'wow',
+        animateClass: 'animated',
+        offset: 0,
+      });
+
+      wow.init();
+    </script>
+    <!-- Navbar -->
+    <header class="header">
+      <div class="header__left">
+        <div class="header__logo">
+          <a href="{{ url_for('home') }}">Cartify</a>
+        </div>
+        <div class="header__search">
+          <div class="header__search---dropdown">
+            <div class="header__search---dropdown-flex">
+              <span class="header__search---dropdown-span">All Categories</span>
+              <i
+                class="fa-solid fa-angle-down header__search---dropdown-icon"
+              ></i>
+            </div>
+
+            <div class="header__search---dropdown-content">
+              <div class="header__search---dropdown-item">Electronics</div>
+              <div class="header__search---dropdown-item">Fashion</div>
+              <div class="header__search---dropdown-item">Home & Kitchen</div>
+              <div class="header__search---dropdown-item">Beauty & Health</div>
+              <div class="header__search---dropdown-item">
+                Sports & Outdoors
+              </div>
+              <div class="header__search---dropdown-item">Automotive</div>
+              <div class="header__search---dropdown-item">Books</div>
+              <div class="header__search---dropdown-item">Toys & Games</div>
+              <div class="header__search---dropdown-item">Grocery</div>
+              <div class="header__search---dropdown-item">Pet Supplies</div>
+              <div class="header__search---dropdown-item">Others</div>
+            </div>
+          </div>
+          <div class="header__search---divider"></div>
+          <form
+            action="{{url_for('search')}}"
+            method="get"
+            style="display: flex; width: 100%"
+          >
+            <input
+              type="text"
+              name="search"
+              id=""
+              placeholder="Search for items..."
+              class="header__search---input"
+              value="{% if request.args.get('search') != None %}{{request.args.get('search')}}{% endif %}"
+            />
+            <button type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="header__right">
+        {% if current_user.is_authenticated and current_user.role == 'user' %}
+        <div class="header__budget">
+          <div class="header__budget---icon">
+            <img src="/static/icons/coins.svg" alt="" />
+          </div>
+          <div class="header__budget---label">${{current_user.budget}}</div>
+        </div>
+        {% endif %} {% if current_user.role != 'admin' %}
+        <div class="header__cart">
+          <div class="header__cart---button">
+            <div class="header__cart---icon">
+              <img
+                src="/static/icons/cart.svg"
+                class="header__cart---icon-img"
+                alt=""
+              />
+              <div class="header__cart---count">
+                {{ session['cart'] | length }}
+              </div>
+            </div>
+            <div class="header__count---label">Cart</div>
+          </div>
+
+          <div class="header__cart---popup">
+            <div class="header__cart---popup-wrapper">
+              <div class="header__cart---popup-items">
+                {% set total = namespace(value=0) %} {% for product in
+                session['cart'] %} {% set total.value = total.value +
+                product.product_price * product.product_quantity %}
+
+                <div class="header__cart---popup-item">
+                  <div class="header__cart---popup-item-details">
+                    <img
+                      class="header__cart---popup-item-img"
+                      src="/static/product_images/{{product.product_name}}/{{product.product_image}}"
+                      alt=""
+                    />
+
+                    <div class="header__cart---popup-item-details__body">
+                      <div class="header__cart---popup-item-name">
+                        {{product.product_name}}
+                      </div>
+                      <div class="header__cart---popup-item-price">
+                        {{product.product_quantity}} x ${{product.product_price
+                        * product.product_quantity}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="header__cart---popup-item-close">
+                    <a
+                      href="{{url_for('remove_from_cart', product_id=product.product_id)}}"
+                      ><i
+                        class="fa-solid fa-times header__cart---popup-item-close__icon"
+                      ></i
+                    ></a>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <div class="header__cart---popup-total">
+                <div class="header__cart---popup-total__label">Total</div>
+                <div class="header__cart---popup-total__count">
+                  ${{total.value}}
+                </div>
+              </div>
+              <div class="header__cart---popup-actions">
+                <a
+                  href="{{url_for('cart')}}"
+                  class="header__cart---popup-btn btn-1"
+                  >View cart</a
+                >
+                <a href="#" class="header__cart---popup-btn btn-2">Checkout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="header__account">
+          <div class="header__account---button">
+            <div class="header__account---icon">
+              <img
+                class="header__account---icon-img"
+                src="/static/icons/user.svg"
+                alt=""
+              />
+            </div>
+            <div class="header__account---label">Account</div>
+          </div>
+
+          <div class="header__account---popup">
+            <div class="header__account---popup-wrapper">
+              {% if current_user.is_authenticated %}
+              <div class="header__account---popup-items">
+                <div class="header__account---popup-item">
+                  <a
+                    href="{{url_for('user')}}"
+                    class="header__account---popup-item-link"
+                  >
+                    <div class="header__account---popup-item-icon">
+                      <img
+                        class="header__account---popup-item-img"
+                        src="/static/icons/user.svg"
+                        alt=""
+                      />
+                    </div>
+                    My Account
+                  </a>
+                </div>
+                <div class="header__account---popup-item">
+                  <a
+                    href="{{url_for('logout')}}"
+                    class="header__account---popup-item-link"
+                  >
+                    <div class="header__account---popup-item-icon">
+                      <img
+                        class="header__account---popup-item-img"
+                        src="/static/icons/logout.svg"
+                        alt=""
+                      />
+                    </div>
+                    Sign Out
+                  </a>
+                </div>
+              </div>
+              {% else %}
+              <div class="header__account---popup-items">
+                <div class="header__account---popup-item">
+                  <a
+                    href="{{url_for('login')}}"
+                    class="header__account---popup-item-link"
+                  >
+                    <div class="header__account---popup-item-icon">
+                      <img
+                        class="header__account---popup-item-img"
+                        src="/static/icons/user.svg"
+                        alt=""
+                      />
+                    </div>
+                    Login
+                  </a>
+                </div>
+                <div class="header__account---popup-item">
+                  <a
+                    href="{{url_for('register')}}"
+                    class="header__account---popup-item-link"
+                  >
+                    <div class="header__account---popup-item-icon">
+                      <img
+                        class="header__account---popup-item-img"
+                        src="/static/icons/user.svg"
+                        alt=""
+                      />
+                    </div>
+                    Register
+                  </a>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- ! Navbar End -->
+    {% block content %}{% endblock content %}
+    <script
+      src="https://kit.fontawesome.com/3d97ad7987.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/static/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; Add New Product{%
+endblock title%} {% block content %}
+<section id="modify-product" class="container">
+  <div class="modify-product">
+    <h2 class="form__title">Edit: {{ product.product_name }}</h2>
+    <form action="" method="post">
+      {{ update_name_form.hidden_tag() }}
+      <div class="form__input flex">
+        {{update_name_form.product_name(value=product.product_name)}}
+        <div class="form__submit flex">{{ update_name_form.submit() }}</div>
+      </div>
+    </form>
+
+    <form action="" method="post">
+      {{ update_price_form.hidden_tag() }}
+      <div class="form__input flex">
+        {{update_price_form.product_price(value=product.product_price)}}
+        <div class="form__submit flex">{{ update_price_form.submit() }}</div>
+      </div>
+    </form>
+    <form action="" method="post">
+      {{ update_category_form.hidden_tag() }}
+      <div class="form__input flex">
+        {{update_category_form.product_category()}}
+        <div class="form__submit flex">{{ update_category_form.submit() }}</div>
+      </div>
+    </form>
+    <form action="" method="post">
+      {{ update_quantity_form.hidden_tag() }}
+      <div class="form__input flex">
+        {{update_quantity_form.product_quantity(value=product.product_quantity)}}
+        <div class="form__submit flex">{{ update_quantity_form.submit() }}</div>
+      </div>
+    </form>
+    <form action="" method="post">
+      {{ update_description_form.hidden_tag() }}
+      <div class="form__input flex">
+        {{update_description_form.product_description()}}
+        <div class="form__submit flex">
+          {{ update_description_form.submit() }}
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock content %}

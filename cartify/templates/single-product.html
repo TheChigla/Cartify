@@ -1,0 +1,171 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; {{ product.name }}{%
+endblock title %} {% block content %}
+<!-- Hero Section -->
+<section id="product" class="container">
+  <div class="product">
+    <div class="product__left">
+      <div class="swiper mySwiper2">
+        <div class="swiper-wrapper">
+          {% for image in images %}
+          <div class="swiper-slide">
+            <img
+              src="/static/product_images/{{product.product_name}}/{{ image.image_path }}"
+            />
+          </div>
+          {% endfor %}
+          <!-- <div class="swiper-slide">
+            <img src="../static/images/product/1.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/2.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/3.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/5.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/6.jpeg" />
+          </div> -->
+        </div>
+      </div>
+      <div thumbsSlider="" class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          {% for image in images %}
+          <div class="swiper-slide">
+            <img
+              src="/static/product_images/{{product.product_name}}/{{ image.image_path }}"
+            />
+          </div>
+          {% endfor %}
+          <!-- <div class="swiper-slide">
+            <img src="../static/images/product/1.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/2.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/3.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/5.jpeg" />
+          </div>
+          <div class="swiper-slide">
+            <img src="../static/images/product/6.jpeg" />
+          </div> -->
+        </div>
+      </div>
+
+      <script>
+        var swiper = new Swiper('.mySwiper', {
+          slidesPerView: 4,
+          spaceBetween: 10,
+          freeMode: true,
+          watchSlidesProgress: true,
+          breakpoints: {
+            0: {
+              slidesPerView: 2,
+            },
+            767: {
+              slidesPerView: 3,
+            },
+            1200: {
+              slidesPerView: 4,
+            },
+          },
+        });
+        var swiper2 = new Swiper('.mySwiper2', {
+          spaceBetween: 10,
+          thumbs: {
+            swiper: swiper,
+          },
+        });
+      </script>
+    </div>
+    <div class="product__right">
+      <div class="product__title">{{ product.product_name }}</div>
+      <div class="product__price">${{ product.product_price }}</div>
+      <div class="product__desc">{{ product.product_description }}</div>
+      {% if current_user.role == 'user' %}
+
+      <form
+        action="{{url_for('add_to_cart', product_id=product.id, product_quantity=1)}}"
+        class="product__actions"
+        method="POST"
+      >
+        {{ form.hidden_tag() }} {% if product.product_quantity != 0 %}
+        <div class="form__input flex">
+          {{form.product_quantity(style='flex: 1', value=1)}}
+          <div class="form__submit flex">
+            <button class="product__button" type="submit">
+              <img src="/static/icons/cart.svg" alt="" />
+              Add to cart
+            </button>
+          </div>
+        </div>
+        {% else %}
+        <span>Product not available</span>
+        {%endif%}
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="product__description">
+    <div class="product__description---title">Description</div>
+    <div class="product__description---body">
+      {{ product.product_description }}
+    </div>
+  </div>
+</section>
+<!-- ! Hero Section End -->
+
+<!-- Products Section -->
+<section id="relatedProducts" class="container">
+  <h2 class="products__heading container__heading">Related Products</h2>
+  <div class="products__list">
+    {% for product in related_products %}
+    <div
+      class="products__list---product wow fadeIn"
+      data-wow-duration="{{ loop.index }}"
+    >
+      <a href="{{url_for('product', product_id=product.id)}}">
+        <div class="products__list---product-img">
+          <img
+            src="/static/product_images/{{product.product_name}}/{{ product.images[0].image_path }}"
+            alt=""
+          />
+        </div>
+        <div class="products__list---product-details">
+          <div class="products__list---product-category">
+            <a href="{{url_for('category', category=product.product_category)}}"
+              >{{product.product_category}}</a
+            >
+          </div>
+          <div class="products__list---product-name">
+            {{ product.product_name }}
+            <span>({{product.product_quantity}} in stock)</span>
+          </div>
+        </div>
+        <div class="products__list---product-flex">
+          <div class="products__list---product-price">
+            ${{ product.product_price }}
+          </div>
+          {% if product.product_quantity != 0 %}
+          <a
+            href="{{url_for('add_to_cart', product_id=product.id, product_quantity=1)}}"
+            class="products__list---product-btn"
+          >
+            <img src="/static/icons/cart.svg" alt="" />
+            Add</a
+          >
+          {%endif %}
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<!-- ! Products Section -->
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block title %}Cartify &mdash; {{ category }}{%
+endblock title %} {% block content %}
+
+<section id="category" class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div class="auth__alert {{ category }}">
+    <div class="auth__alert---text">{{ message }}</div>
+    <div class="auth__alert---close-btn">
+      <span>&times;</span>
+    </div>
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
+  <h2 class="category__heading">Category - {{ category }}</h2>
+  <div class="products__list"> {% for product in products %}
+  <div class="products__list---product wow fadeIn" data-wow-duration="1s">
+    <a href="{{url_for('product', product_id=product.id)}}">
+      <div class="products__list---product-img">
+        <img
+          src="/static/product_images/{{product.product_name}}/{{product.images[0].image_path}}"
+          alt=""
+        />
+      </div>
+      <div class="products__list---product-details">
+        <div class="products__list---product-category">
+          <a href="{{url_for('category', category=product.product_category)}}"
+            >{{product.product_category}}</a
+          >
+        </div>
+        <div class="products__list---product-name">
+          {{product.product_name}}
+          <span>({{product.product_quantity}} in stock)</span>
+        </div>
+      </div>
+      <div class="products__list---product-flex">
+        <div class="products__list---product-price">
+          ${{product.product_price}}
+        </div>
+        {% if product.product_quantity != 0 %}
+        <a
+          href="{{url_for('add_to_cart', product_id=product.id, product_quantity=1)}}"
+          class="products__list---product-btn"
+        >
+          <img src="/static/icons/cart.svg" alt="" />
+          Add</a
+        >
+        {%endif %}
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</section>
+
+{% endblock content %}
